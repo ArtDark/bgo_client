@@ -7,28 +7,37 @@ import (
 	"os"
 )
 
-type QrApi struct {
-	url     string
-	version string
-	method  string
-	data    string
-} //TODO: Написать структуру запроса
+type apiMethod string
+type Data string
+type Size struct {
+	Height int
+	Weight int
+}
+type Api struct {
+	Protocol string
+	Dns      string
+	Version  string
+	Method   apiMethod
+	Data     Data
+	Size     Size
+}
 
-func QrCreator() error { //TODO: превратить в сервис
+func (s *Api) QrCreator(err error) {
+
 	reqURL := "http://api.qrserver.com/v1/create-qr-code/?data=Ты%20пидор!&size=100x100"
 
 	resp, err := http.Get(reqURL)
 
 	if err != nil {
 		log.Println(err)
-		return err
+
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Println(err)
-		return err
+
 	}
 
 	file, err := os.Create("image.png")
@@ -45,7 +54,5 @@ func QrCreator() error { //TODO: превратить в сервис
 	if err != nil {
 		log.Println("Cannot open file", err)
 	}
-
-	return nil
 
 }
