@@ -18,11 +18,12 @@ func QrCreator() error { //TODO: превратить в сервис
 	reqURL := "http://api.qrserver.com/v1/create-qr-code/?data=Ты%20пидор!&size=100x100"
 
 	resp, err := http.Get(reqURL)
-	defer resp.Body.Close()
+
 	if err != nil {
 		log.Println(err)
 		return err
 	}
+	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
