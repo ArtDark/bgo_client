@@ -22,9 +22,7 @@ type Api struct {
 	Size     Size
 }
 
-func (s *Api) QrCreator(err error) {
-
-	reqURL := "http://api.qrserver.com/v1/create-qr-code/?data=Ты%20пидор!&size=100x100"
+func QrCreator(reqURL string) (err error) {
 
 	resp, err := http.Get(reqURL)
 
@@ -54,5 +52,6 @@ func (s *Api) QrCreator(err error) {
 	if err != nil {
 		log.Println("Cannot open file", err)
 	}
+	return nil
 
 }
