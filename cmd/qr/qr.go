@@ -9,19 +9,19 @@ import (
 
 func main() {
 
-	var text qr.Data = "Netology"
+	var text qr.Data = "https://netology.ru"
 	height := 100
 	weight := 100
 
 	createQrApi := &qr.Api{
-		Protocol: "http://",
+		Protocol: "https://",
 		Dns:      "api.qrserver.com",
 		Version:  "v1",
 		Method:   "create-qr-code",
 		Data:     text,
 		Size: qr.Size{
-			height,
-			weight,
+			Height: height,
+			Weight: weight,
 		},
 	}
 
@@ -29,7 +29,7 @@ func main() {
 	value.Set("data", string(text))
 	value.Set("size", fmt.Sprintf("%dX%d", createQrApi.Size.Height, createQrApi.Size.Weight))
 
-	urlReq := fmt.Sprintf("%s%s/%s/%s/%s",
+	urlReq := fmt.Sprintf("%s%s/%s/%s/?%s",
 		createQrApi.Protocol,
 		createQrApi.Dns,
 		createQrApi.Version,
