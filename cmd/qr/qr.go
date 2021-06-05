@@ -20,20 +20,20 @@ func main() {
 
 	log.Println(timeOut)
 
-	createQrUrl := qr.NewApi("https://", "api.qrserver.com", "v1", "create-qr-code", text, size)
+	srv := qr.NewService("https://", "Service.qrserver.com", "v1", "create-qr-code", text, size)
 
 	value := make(url.Values)
 	value.Set("data", string(text))
-	value.Set("size", fmt.Sprintf("%dX%d", createQrUrl.Size.Height, createQrUrl.Size.Weight))
+	value.Set("size", fmt.Sprintf("%dX%d", srv.Size.Height, srv.Size.Weight))
 
 	urlReq := fmt.Sprintf("%s%s/%s/%s/?%s",
-		createQrUrl.Protocol,
-		createQrUrl.Dns,
-		createQrUrl.Version,
-		createQrUrl.Method,
+		srv.Protocol,
+		srv.Dns,
+		srv.Version,
+		srv.Method,
 		value.Encode())
 
-	err := qr.QrCreator(urlReq, fileName)
+	err := srv.QrCreator(urlReq, fileName)
 	if err != nil {
 		log.Println(err)
 		return

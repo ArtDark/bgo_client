@@ -13,7 +13,7 @@ type Size struct {
 	Height int
 	Weight int
 }
-type Api struct {
+type Service struct {
 	Protocol string
 	Dns      string
 	Version  string
@@ -22,11 +22,11 @@ type Api struct {
 	Size     Size
 }
 
-func NewApi(protocol string, dns string, version string, method apiMethod, data Data, size Size) *Api {
-	return &Api{Protocol: protocol, Dns: dns, Version: version, Method: method, Data: data, Size: size}
+func NewService(protocol string, dns string, version string, method apiMethod, data Data, size Size) *Service {
+	return &Service{Protocol: protocol, Dns: dns, Version: version, Method: method, Data: data, Size: size}
 }
 
-func QrCreator(reqURL string, fileName string) (err error) {
+func (s *Service) QrCreator(reqURL string, fileName string) (err error) {
 
 	resp, err := http.Get(reqURL)
 
