@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type apiMethod string
@@ -13,20 +14,28 @@ type Size struct {
 	Height int
 	Weight int
 }
-type Api struct {
+type Service struct {
 	Protocol string
 	Dns      string
 	Version  string
 	Method   apiMethod
 	Data     Data
 	Size     Size
+	Timeout  time.Duration
 }
 
-func NewApi(protocol string, dns string, version string, method apiMethod, data Data, size Size) *Api {
-	return &Api{Protocol: protocol, Dns: dns, Version: version, Method: method, Data: data, Size: size}
+func NewService(protocol string, dns string, version string, method apiMethod, data Data, size Size, timeout time.Duration) *Service {
+	return &Service{
+		Protocol: protocol,
+		Dns:      dns,
+		Version:  version,
+		Method:   method,
+		Data:     data,
+		Size:     size,
+		Timeout:  timeout}
 }
 
-func QrCreator(reqURL string, fileName string) (err error) {
+func (s *Service) QrCreator(reqURL string, fileName string) (err error) {
 
 	resp, err := http.Get(reqURL)
 
