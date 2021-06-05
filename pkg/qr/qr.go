@@ -22,7 +22,11 @@ type Api struct {
 	Size     Size
 }
 
-func QrCreator(reqURL string) (err error) {
+func NewApi(protocol string, dns string, version string, method apiMethod, data Data, size Size) *Api {
+	return &Api{Protocol: protocol, Dns: dns, Version: version, Method: method, Data: data, Size: size}
+}
+
+func QrCreator(reqURL string, fileName string) (err error) {
 
 	resp, err := http.Get(reqURL)
 
@@ -38,7 +42,7 @@ func QrCreator(reqURL string) (err error) {
 
 	}
 
-	file, err := os.Create("image.png")
+	file, err := os.Create(fileName)
 	if err != nil {
 		log.Println("Cannot open file", err)
 	}
