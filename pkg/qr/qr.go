@@ -1,10 +1,12 @@
 package qr
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -35,21 +37,7 @@ func NewService(protocol string, dns string, version string, method apiMethod, d
 		Timeout:  timeout}
 }
 
-func (s *Service) QrCreator(reqURL string, fileName string) (err error) {
-
-	resp, err := http.Get(reqURL)
-
-	if err != nil {
-		log.Println(err)
-
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-
-	}
+func (s *Service) QrCreator(data []byte, fileName string) (err error) {
 
 	file, err := os.Create(fileName)
 	if err != nil {
@@ -61,10 +49,31 @@ func (s *Service) QrCreator(reqURL string, fileName string) (err error) {
 		}
 	}(file)
 
-	_, err = file.Write(body)
+	_, err = file.Write(data)
 	if err != nil {
 		log.Println("Cannot open file", err)
 	}
 	return nil
 
+}
+
+func (s *Service) Encode(ctx context.Context, data string) (dataexport []byte, filetype string, err error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, data, nil)
+	if err != nil {
+		log.Println(err)
+		return nil, "", err
+	}
+
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return nil, "", err
+
+	}
+	dataexport, err = io.ReadAll(resp.Body)
+	imgName := strings.Replace(resp.Header["Content-Type"][0], "/", ".", 1)
+	log.Println(imgName)
+
+	return dataexport, imgName, nil
 }
