@@ -15,7 +15,6 @@ func main() {
 
 	var text qr.Data = "https://netology.ru"
 	size := qr.Size{Height: 100, Weight: 100}
-	fileName := "qr.png"
 	timeoutEnv, ok := os.LookupEnv("qr_timeout")
 	if !ok {
 		log.Println("no timeout specified (qr_timeout env variable)")
@@ -26,7 +25,7 @@ func main() {
 		log.Println(err)
 	}
 
-	srv := qr.NewService("https://", "api.qrserver.com", "v1", "create-qr-code", text, size, time.Duration(timeout))
+	srv := qr.NewService("https://", "api.qrserver.com", "v1", "create-qr-code", text, size, time.Duration(timeout)*time.Millisecond)
 
 	value := make(url.Values)
 	value.Set("data", string(text))
@@ -40,12 +39,15 @@ func main() {
 		value.Encode())
 
 	ctx, _ := context.WithTimeout(context.Background(), srv.Timeout)
-	log.Println(ctx)
 
-	srvErr := srv.QrCreator(urlReq, fileName)
-	if srvErr != nil {
+	qrCode, img, err := srv.Encode(ctx, urlReq)
+	if err != nil {
 		log.Println(err)
-		return
+	}
+
+	err = srv.QrCreator(qrCode, img)
+	if err != nil {
+		log.Println(err)
 	}
 
 }
