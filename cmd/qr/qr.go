@@ -6,16 +6,15 @@ import (
 	"github.com/ArtDark/bgo_client/pkg/qr"
 	"log"
 	"net/url"
-	"os"
 	"strconv"
 	"time"
 )
 
 func main() {
 
-	var text qr.Data = "https://netology.ru"
+	var text qr.Data = "https://netology.ruc"
 	size := qr.Size{Height: 100, Weight: 100}
-	timeoutEnv, ok := os.LookupEnv("qr_timeout")
+	timeoutEnv, ok := "2000", true //os.LookupEnv("qr_timeout")
 	if !ok {
 		log.Println("no timeout specified (qr_timeout env variable)")
 	}
@@ -38,16 +37,17 @@ func main() {
 		srv.Method,
 		value.Encode())
 
-	ctx, _ := context.WithTimeout(context.Background(), srv.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), srv.Timeout)
 
 	qrCode, img, err := srv.Encode(ctx, urlReq)
 	if err != nil {
-		log.Println(err)
+		return
 	}
+	cancel()
 
 	err = srv.QrCreator(qrCode, img)
 	if err != nil {
-		log.Println(err)
+		return
 	}
 
 }

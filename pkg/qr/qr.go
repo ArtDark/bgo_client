@@ -42,16 +42,19 @@ func (s *Service) QrCreator(data []byte, fileName string) (err error) {
 	file, err := os.Create(fileName)
 	if err != nil {
 		log.Println("Cannot open file", err)
+		return err
 	}
 	defer func(c io.Closer) {
 		if cerr := c.Close(); cerr != nil {
 			log.Println("Cannot close file", cerr)
+			return
 		}
 	}(file)
 
 	_, err = file.Write(data)
 	if err != nil {
 		log.Println("Cannot open file", err)
+		return err
 	}
 	return nil
 
@@ -72,8 +75,11 @@ func (s *Service) Encode(ctx context.Context, data string) (dataexport []byte, f
 
 	}
 	dataexport, err = io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+		return nil, "", err
+	}
 	imgName := strings.Replace(resp.Header["Content-Type"][0], "/", ".", 1)
-	log.Println(imgName)
 
 	return dataexport, imgName, nil
 }
