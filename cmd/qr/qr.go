@@ -12,7 +12,7 @@ import (
 
 func main() {
 
-	var text qr.Data = "https://netology.ruc"
+	var text qr.Data = "https://netology.ru"
 	size := qr.Size{Height: 100, Weight: 100}
 	timeoutEnv, ok := "2000", true //os.LookupEnv("qr_timeout")
 	if !ok {
