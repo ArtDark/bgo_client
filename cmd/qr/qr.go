@@ -22,6 +22,7 @@ func main() {
 	timeout, err := strconv.Atoi(timeoutEnv)
 	if err != nil {
 		log.Println(err)
+		return
 	}
 
 	srv := qr.NewService("https://", "api.qrserver.com", "v1", "create-qr-code", text, size, time.Duration(timeout)*time.Millisecond)
